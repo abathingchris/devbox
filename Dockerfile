@@ -28,7 +28,6 @@ env PKG_CONFIG_PATH /home/dev/lib/pkgconfig
 env LD_LIBRARY_PATH /home/dev/lib
 env GOPATH /home/dev/go:$GOPATH
 
-run go get github.com/dotcloud/gordon/pulls
 
 # Create a shared data volume
 # We need to create an empty file, otherwise the volume will
