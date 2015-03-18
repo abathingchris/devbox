@@ -1,0 +1,2 @@
+export PS1="\[${bold}${green}\]\u \[$White\]at \[$orange\]docker(\h) \[$White\]- \[$blue\]\w\[$White\]\$([[ -n \$(git branch 2> /dev/null) ]] && echo \" on \")\[$White\]\n\$ \[$reset\]"
+# export PS2="\[$orange\]- \[$reset\]"

@@ -1,33 +1,29 @@
 from ubuntu:14.04
 
-run apt-get update -y
-run apt-get install -y mercurial
-run apt-get install -y git
-run apt-get install -y python
-run apt-get install -y curl
-run apt-get install -y vim
-run apt-get install -y strace
-run apt-get install -y diffstat
-run apt-get install -y pkg-config
-run apt-get install -y cmake
-run apt-get install -y build-essential
-run apt-get install -y tcpdump
-run apt-get install -y screen
+run apt-get update -y && apt-get install -y \
+  git \
+  python \
+  curl \
+  vim \
+  pkg-config \
+  cmake \
+  build-essential \
+  ruby-dev
 
-# Install go
-run curl https://go.googlecode.com/files/go1.2.1.linux-amd64.tar.gz | tar -C /usr/local -zx
-env GOROOT /usr/local/go
-env PATH /usr/local/go/bin:$PATH
+# Install rmate
+run curl -Lo /bin/rmate https://raw.github.com/textmate/rmate/master/bin/rmate
+run chmod a+x /bin/rmate
 
 # Setup home environment
 run useradd dev
+run echo "dev:docker" | chpasswd
+run usermod -a -G sudo dev
 run mkdir /home/dev && chown -R dev: /home/dev
-run mkdir -p /home/dev/go /home/dev/bin /home/dev/lib /home/dev/include
+run mkdir -p /home/dev/bin /home/dev/lib /home/dev/include
+run localedef -i en_US -f UTF-8 en_US.UTF-8
 env PATH /home/dev/bin:$PATH
 env PKG_CONFIG_PATH /home/dev/lib/pkgconfig
 env LD_LIBRARY_PATH /home/dev/lib
-env GOPATH /home/dev/go:$GOPATH
-
 
 # Create a shared data volume
 # We need to create an empty file, otherwise the volume will
@@ -38,12 +34,17 @@ run touch /var/shared/placeholder
 run chown -R dev:dev /var/shared
 volume /var/shared
 
+
 workdir /home/dev
 env HOME /home/dev
 add vimrc /home/dev/.vimrc
 add vim /home/dev/.vim
-add bash_profile /home/dev/.bash_profile
+add bash_profile /home/dev/.bashrc
 add gitconfig /home/dev/.gitconfig
+add colors /home/dev/.colors
+add exports /home/dev/.exports
+add aliases /home/dev/.aliases
+add bash_prompt /home/dev/.bash_prompt
 
 # Link in shared parts of the home directory
 run ln -s /var/shared/.ssh
