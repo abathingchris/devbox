@@ -1,6 +1,6 @@
-from ubuntu:14.04
+FROM ubuntu:14.04
 
-run apt-get update -y && apt-get install -y \
+RUN apt-get update -y && apt-get install -y \
   git \
   python \
   curl \
@@ -11,45 +11,45 @@ run apt-get update -y && apt-get install -y \
   ruby-dev
 
 # Install rmate
-run curl -Lo /bin/rmate https://raw.github.com/textmate/rmate/master/bin/rmate
-run chmod a+x /bin/rmate
+RUN curl -Lo /bin/rmate https://raw.github.com/textmate/rmate/master/bin/rmate
+RUN chmod a+x /bin/rmate
 
 # Setup home environment
-run useradd dev
-run echo "dev:docker" | chpasswd
-run usermod -a -G sudo dev
-run mkdir /home/dev && chown -R dev: /home/dev
-run mkdir -p /home/dev/bin /home/dev/lib /home/dev/include
-run localedef -i en_US -f UTF-8 en_US.UTF-8
-env PATH /home/dev/bin:$PATH
-env PKG_CONFIG_PATH /home/dev/lib/pkgconfig
-env LD_LIBRARY_PATH /home/dev/lib
+RUN useradd dev
+RUN echo "dev:docker" | chpasswd
+RUN usermod -a -G sudo dev
+RUN mkdir /home/dev && chown -R dev: /home/dev
+RUN mkdir -p /home/dev/bin /home/dev/lib /home/dev/include
+RUN localedef -i en_US -f UTF-8 en_US.UTF-8
+ENV PATH /home/dev/bin:$PATH
+ENV PKG_CONFIG_PATH /home/dev/lib/pkgconfig
+ENV LD_LIBRARY_PATH /home/dev/lib
 
 # Create a shared data volume
 # We need to create an empty file, otherwise the volume will
 # belong to root.
 # This is probably a Docker bug.
-run mkdir /var/shared/
-run touch /var/shared/placeholder
-run chown -R dev:dev /var/shared
-volume /var/shared
+RUN mkdir /var/shared/
+RUN touch /var/shared/placeholder
+RUN chown -R dev:dev /var/shared
+VOLUME /var/shared
 
 
-workdir /home/dev
-env HOME /home/dev
-add vimrc /home/dev/.vimrc
-add vim /home/dev/.vim
-add bash_profile /home/dev/.bashrc
-add gitconfig /home/dev/.gitconfig
-add colors /home/dev/.colors
-add exports /home/dev/.exports
-add aliases /home/dev/.aliases
-add bash_prompt /home/dev/.bash_prompt
+WORKDIR /home/dev
+ENV HOME /home/dev
+ADD vimrc /home/dev/.vimrc
+ADD vim /home/dev/.vim
+ADD bash_profile /home/dev/.bashrc
+ADD gitconfig /home/dev/.gitconfig
+ADD colors /home/dev/.colors
+ADD exports /home/dev/.exports
+ADD aliases /home/dev/.aliases
+ADD bash_prompt /home/dev/.bash_prompt
 
 # Link in shared parts of the home directory
-run ln -s /var/shared/.ssh
-run ln -s /var/shared/.bash_history
-run ln -s /var/shared/.maintainercfg
+RUN ln -s /var/shared/.ssh
+RUN ln -s /var/shared/.bash_history
+RUN ln -s /var/shared/.maintainercfg
 
-run chown -R dev: /home/dev
-user dev
+RUN chown -R dev: /home/dev
+USER dev
