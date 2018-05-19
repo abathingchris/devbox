@@ -1,6 +1,8 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 RUN apt-get update -y && apt-get install -y \
+  sudo \
+  locales \
   git \
   python \
   curl \
@@ -20,6 +22,7 @@ RUN echo "dev:docker" | chpasswd
 RUN usermod -a -G sudo dev
 RUN mkdir /home/dev && chown -R dev: /home/dev
 RUN mkdir -p /home/dev/bin /home/dev/lib /home/dev/include
+RUN locale-gen
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV PATH /home/dev/bin:$PATH
 ENV PKG_CONFIG_PATH /home/dev/lib/pkgconfig
